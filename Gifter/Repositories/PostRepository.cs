@@ -69,6 +69,92 @@ namespace Gifter.Repositories
 												}
 								}
 
+								public List<Post> GetAllWithComments()
+								{
+												//Create SQL connection
+												using (SqlConnection conn = Connection)
+												{
+																//Connect to SQL database
+																conn.Open();
+																//Create the SQL Query, joining UserProfile and Comments to Post table
+																using (var cmd = conn.CreateCommand())
+																{
+																				cmd.CommandText = @"
+																				SELECT p.Id AS PostId, p.Title, p.Caption, p.DateCreated AS PostDateCreated,
+                       p.ImageUrl AS PostImageUrl, p.UserProfileId AS PostUserProfileId,
+
+                       up.Name, up.Bio, up.Email, up.DateCreated AS UserProfileDateCreated,
+                       up.ImageUrl AS UserProfileImageUrl,
+
+                       c.Id AS CommentId, c.Message, c.UserProfileId AS CommentUserProfileId
+																				FROM Post p
+                       LEFT JOIN UserProfile up ON p.UserProfileId = up.id
+                       LEFT JOIN Comment c on c.PostId = p.id
+																				ORDER BY p.DateCreated";
+
+																				SqlDataReader reader = cmd.ExecuteReader();
+
+																				//Create a new empty list to store posts returned from database
+																				List<Post> posts = new List<Post>();
+																				//Initiate a while loop to iterate through database results
+																				while (reader.Read())
+																				{
+																								//Declare postId variable to store current "PostId" from table row.
+																								int postId = DbUtils.GetInt(reader, "PostId");
+
+																								// Declare existingPost to reference the first post object in the posts list
+																								// that matches the postId variable.
+																								Post existingPost = posts.FirstOrDefault(p => p.Id == postId);
+																								// If existing post = null, create a new Post object from DB data,
+																								// which contains a UserProfile object
+																								if (existingPost == null)
+																								{
+																												existingPost = new Post()
+																												{
+																																Id = postId,
+																																Title = DbUtils.GetString(reader, "Title"),
+																																Caption = DbUtils.GetString(reader, "Caption"),
+																																DateCreated = DbUtils.GetDateTime(reader, "PostDateCreated"),
+																																ImageUrl = DbUtils.GetString(reader, "PostImageUrl"),
+																																UserProfileId = DbUtils.GetInt(reader, "PostUserProfileId"),
+																																UserProfile = new UserProfile()
+																																{
+																																				Id = DbUtils.GetInt(reader, "PostUserProfileId"),
+																																				Name = DbUtils.GetString(reader, "Name"),
+																																				Email = DbUtils.GetString(reader, "Email"),
+																																				DateCreated = DbUtils.GetDateTime(reader, "UserProfileDateCreated"),
+																																				ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl"),
+																																},
+																																Comments = new List<Comment>()
+																												};
+
+																												// Add existingPost to posts list
+																												posts.Add(existingPost);
+																								}
+																								// If the result of the IsNotDbNull method is true,
+																								// after reading the CommentId value of the current DB row,
+																								// create a new Comment object from table join in the SQL command
+																								if (DbUtils.IsNotDbNull(reader, "CommentId"))
+																								{
+																												existingPost.Comments.Add(new Comment()
+																												{
+																																Id = DbUtils.GetInt(reader, "CommentId"),
+																																Message = DbUtils.GetString(reader, "Message"),
+																																PostId = postId,
+																																UserProfileId = DbUtils.GetInt(reader, "CommentUserProfileId")
+																												});
+																								}
+																				}
+
+																				// Close database connection
+																				reader.Close();
+
+																				// Return the posts list
+																				return posts;
+																}
+												}
+								}
+
 								public Post GetById(int id)
 								{
 												using (var conn = Connection)
