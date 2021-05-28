@@ -338,7 +338,7 @@ namespace Gifter.Repositories
 																				DbUtils.AddParameter(cmd, "@ImageUrl", post.ImageUrl);
 																				DbUtils.AddParameter(cmd, "@UserProfileId", post.UserProfileId);
 																				DbUtils.AddParameter(cmd, "@Id", post.Id);
-
+																				;
 																				cmd.ExecuteNonQuery();
 																}
 												}
