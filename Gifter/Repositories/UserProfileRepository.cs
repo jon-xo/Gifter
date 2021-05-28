@@ -21,7 +21,8 @@ namespace Gifter.Repositories
 																using (SqlCommand cmd = conn.CreateCommand())
 																{
 																				cmd.CommandText = @"
-																								SELECT [Name],
+																								SELECT Id,
+																															[Name],
 																															Email,
 																															ImageUrl,
 																															Bio,
