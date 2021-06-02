@@ -39,7 +39,7 @@ namespace Gifter
 												{
 																app.UseDeveloperExceptionPage();
 
-																// Do not block requests while in development
+																//Do not block requests while in development
 																app.UseCors(options =>
 																{
 																				options.AllowAnyOrigin();
