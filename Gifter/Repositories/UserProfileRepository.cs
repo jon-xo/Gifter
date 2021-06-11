@@ -63,6 +63,58 @@ namespace Gifter.Repositories
 												}
 								}
 
+								public UserProfile GetByFirebaseUserId(string firebaseUserId)
+								{
+												using (SqlConnection conn = Connection)
+												{
+																conn.Open();
+																using (SqlCommand cmd = conn.CreateCommand())
+																{
+																				cmd.CommandText = @"
+																								SELECT Id,
+																															FirebaseUserId,
+																															[Name],
+																															Email,
+																															ImageUrl,
+																															Bio,
+																															DateCreated
+																								FROM UserProfile
+																								WHERE FirebaseUserId = @FirebaseuserId";
+
+																				DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
+
+																				UserProfile userProfile = null;
+
+																				SqlDataReader reader = cmd.ExecuteReader();
+																				if (reader.Read())
+																				{
+																								userProfile = new UserProfile()
+																								{
+																												Id = DbUtils.GetInt(reader, "Id"),
+																												FirebaseUserId = DbUtils.GetString(reader, "FirebaseUserId"),
+																												Name = DbUtils.GetString(reader, "UserProfileName"),
+																												Email = DbUtils.GetString(reader, "Email"),
+																												DateCreated = DbUtils.GetDateTime(reader, "DateCreated")
+																								};
+
+																								if (DbUtils.IsNotDbNull(reader, "ImageUrl"))
+																								{
+																												userProfile.ImageUrl = DbUtils.GetString(reader, "ImageUrl");
+																								}
+
+																								if (DbUtils.IsNotDbNull(reader, "Bio"))
+																								{
+																												userProfile.Bio = DbUtils.GetString(reader, "Bio");
+																								}
+																				}
+
+																				reader.Close();
+
+																				return userProfile;
+																}
+												}
+								}
+
 								public UserProfile GetById(int id)
 								{
 												using (SqlConnection conn = Connection)

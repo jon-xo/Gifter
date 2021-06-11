@@ -5,11 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gifter.Repositories;
 using Gifter.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Gifter.Controllers
 {
+				[Authorize]
 				[Route("api/[controller]")]
 				[ApiController]
 				public class UserProfileController : ControllerBase
@@ -68,6 +71,12 @@ namespace Gifter.Controllers
 								{
 												_userProfileRepository.Delete(id);
 												return NoContent();
+								}
+
+								private UserProfile GetCurrentUserProfile()
+								{
+												var firebaseUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+												return _userProfileRepository.GetByFirebaseUserId(firebaseUserId);
 								}
 				}
 }

@@ -176,7 +176,7 @@ namespace Gifter.Repositories
 																																				p.Caption, 
 																																				p.DateCreated AS PostDateCreated, 
 																																				p.ImageUrl AS PostImageUrl, 
-																																				p.UserProfileId,
+																																				p.UserProfileId AS PostUserProfileId,
 
 																																				up.[Name], 
 																																				up.Bio, 
@@ -201,7 +201,7 @@ namespace Gifter.Repositories
 																												Caption = DbUtils.GetString(reader, "Caption"),
 																												DateCreated = DbUtils.GetDateTime(reader, "PostDateCreated"),
 																												ImageUrl = DbUtils.GetString(reader, "PostImageUrl"),
-																												UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+																												UserProfileId = DbUtils.GetInt(reader, "PostUserProfileId"),
 																												UserProfile = new UserProfile()
 																												{
 																																Id = DbUtils.GetInt(reader, "PostUserProfileId"),

@@ -1,14 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+				<PropertyGroup>
+								<TargetFramework>net5.0</TargetFramework>
+				</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.3" />
-  </ItemGroup>
+				<ItemGroup>
+								<Content Remove="appsettings.Local.json" />
+				</ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+				<ItemGroup>
+								<None Include="appsettings.Local.json" />
+				</ItemGroup>
+
+				<ItemGroup>
+								<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
+								<PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
+								<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+				</ItemGroup>
 
 
 </Project>
